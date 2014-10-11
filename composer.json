@@ -1,0 +1,22 @@
+{
+    "name": "sb15/php-console-browser",
+    "type": "library",
+    "description": "console browser",
+    "keywords": ["api"],
+    "homepage": "https://github.com/sb15/php-console-browser",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alexander Perov",
+            "email": "alex@sb6.ru"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Sb\\": "src"
+        }
+    },
+    "require": {
+        "sunra/php-simple-html-dom-parser": "v1.5.0"
+    }
+}
