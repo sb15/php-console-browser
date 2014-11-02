@@ -151,12 +151,11 @@ class Console
         $this->dom = null;
 
         if ($error > 0) {
-            die;
+            throw new Exception\Exception("Curl error: ". $error);
         }
 
-        if ($redirect > 5) {
-            // limit
-            die;
+        if ($redirect > 10) {
+            throw new Exception\Exception("Max redirects: ". 10);
         }
 
         $httpCode = $requestInfo['http_code'];
