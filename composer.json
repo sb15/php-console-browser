@@ -17,6 +17,7 @@
         }
     },
     "require": {
-        "sunra/php-simple-html-dom-parser": "v1.5.0"
+        "sunra/php-simple-html-dom-parser": "v1.5.0",
+        "sb15/utils": "*"
     }
 }
