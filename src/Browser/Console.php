@@ -174,10 +174,29 @@ class Console
         return $responseBody;
     }
 
+    public function getCurrentScheme()
+    {
+        return parse_url($this->getLastUrl(), PHP_URL_SCHEME);
+    }
+
+    public function getCurrentHost()
+    {
+        return parse_url($this->getLastUrl(), PHP_URL_HOST);
+    }
+
     public function relativeToAbsolute($url)
     {
         if (strpos($url, 'http') !== 0) {
-            // относит url
+            // относит url, to-do parse url
+
+            if (strpos($url, '/') === 0) {
+                $url = $this->getCurrentScheme() . ':' . $this->getCurrentHost() . $url;
+            } else {
+                $url = $this->getCurrentScheme() . ':' . $this->getCurrentHost() . '/' .$url;
+            }
+
+        } elseif (strpos($url, '//') === 0) {
+            $url = $this->getCurrentScheme() . ':' . $url;
         }
         return $url;
     }
