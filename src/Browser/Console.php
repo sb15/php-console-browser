@@ -15,6 +15,8 @@ class Console
     private $lastUrl = null;
     private $lastRequest = null;
     private $lastResponse = null;
+    private $lastResponseBody = null;
+    private $lastResponseHeaders = null;
 
     private $redirects = 0;
     private $timeout = 120;
@@ -63,18 +65,29 @@ class Console
         return $this->referer;
     }
 
+    public function getLastResponseBody()
+    {
+        return $this->lastResponseBody;
+    }
+
+    public function getLastResponseHeaders()
+    {
+        return $this->lastResponseHeaders;
+    }
+
     public function mergeParams($url, $params)
     {
         $urlParts = parse_url($url);
         if (!empty($urlParts['query'])) {
-            $urlParts['query'] .= '&' . SbUrlUtils::httpBuildUrl($params);
+            $urlParts['query'] .= '&' . http_build_query($params);
+        } else {
+            $urlParts['query'] = http_build_query($params);
         }
         return SbUrlUtils::httpBuildUrl($url, $urlParts);
     }
 
     public function request($url, $method = self::REQUEST_METHOD_GET, $params = array(), $redirect = 0, $isSubRequest = false)
     {
-        $paramsString = SbUrlUtils::httpBuildUrl($params);
         if ($method == self::REQUEST_METHOD_GET) {
             $requestUrl = $this->mergeParams($url, $params);
             $ch = curl_init($requestUrl);
@@ -82,7 +95,7 @@ class Console
             $requestUrl = $url;
             $ch = curl_init($requestUrl);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $paramsString);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
         }
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -108,7 +121,7 @@ class Console
             curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
         }
 
-        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
         curl_setopt($ch, CURLINFO_HEADER_OUT, 1);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
 
@@ -121,15 +134,18 @@ class Console
         $response = curl_exec($ch);
         $error = curl_errno($ch);
         $requestInfo = curl_getinfo($ch);
-        curl_close($ch);
+        $headerSize = $requestInfo['header_size'];
+        $responseHeader = substr($response, 0, $headerSize);
+        $responseBody = substr($response, $headerSize);
 
-        //var_dump($response);
-        //var_dump($requestInfo);
+        curl_close($ch);
 
         $redirectUrl = $requestInfo['redirect_url'];
 
         $this->lastRequest = $requestInfo['request_header'];
         $this->lastResponse = $response;
+        $this->lastResponseBody = $responseBody;
+        $this->lastResponseHeaders = $responseHeader;
         $this->lastUrl = $requestUrl;
 
         $this->dom = null;
@@ -156,7 +172,7 @@ class Console
 
         }
 
-        return $response;
+        return $responseBody;
     }
 
     public function relativeToAbsolute($url)
