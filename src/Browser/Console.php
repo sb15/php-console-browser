@@ -37,7 +37,7 @@ class Console
 
     public function addHeader($name, $value)
     {
-        $this->headers[] = array($name => $value);
+        $this->headers[] = $name . ': ' . $value;
     }
 
     public function clearHeader()
@@ -186,7 +186,9 @@ class Console
 
     public function relativeToAbsolute($url)
     {
-        if (strpos($url, 'http') !== 0) {
+        if (strpos($url, '//') === 0) {
+            $url = $this->getCurrentScheme() . ':' . $url;
+        } elseif (strpos($url, 'http') !== 0) {
             // относит url, to-do parse url
 
             if (strpos($url, '/') === 0) {
@@ -194,9 +196,6 @@ class Console
             } else {
                 $url = $this->getCurrentScheme() . ':' . $this->getCurrentHost() . '/' .$url;
             }
-
-        } elseif (strpos($url, '//') === 0) {
-            $url = $this->getCurrentScheme() . ':' . $url;
         }
         return $url;
     }
