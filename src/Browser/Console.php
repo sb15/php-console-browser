@@ -95,7 +95,11 @@ class Console
             $requestUrl = $url;
             $ch = curl_init($requestUrl);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+            if (is_array($params)) {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+            } else {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode($params));
+            }
         }
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -143,6 +147,13 @@ class Console
         $redirectUrl = $requestInfo['redirect_url'];
 
         $this->lastRequest = $requestInfo['request_header'];
+        if ($method == self::REQUEST_METHOD_POST ) {
+            if (is_array($params)) {
+                $this->lastRequest .= http_build_query($params);
+            } else {
+                $this->lastRequest .= urlencode($params);
+            }
+        }
         $this->lastResponse = $response;
         $this->lastResponseBody = $responseBody;
         $this->lastResponseHeaders = $responseHeader;
