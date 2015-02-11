@@ -96,7 +96,7 @@ class Console
             $ch = curl_init($requestUrl);
             curl_setopt($ch, CURLOPT_POST, 1);
             if (is_array($params)) {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
             } else {
                 curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode($params));
             }
