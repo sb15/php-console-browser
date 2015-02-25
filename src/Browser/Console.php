@@ -55,6 +55,11 @@ class Console
         return $this->userAgent;
     }
 
+    public function setUserAgent($userAgent)
+    {
+        $this->userAgent = $userAgent;
+    }
+
     public function getCookiesJar()
     {
         return $this->cookiesJar;
@@ -83,7 +88,9 @@ class Console
         } else {
             $urlParts['query'] = http_build_query($params);
         }
-        return SbUrlUtils::httpBuildUrl($url, $urlParts);
+        $result = SbUrlUtils::httpBuildUrl($url, $urlParts);
+        $result = rtrim($result, '?');
+        return $result;
     }
 
     public function request($url, $method = self::REQUEST_METHOD_GET, $params = array(), $redirect = 0, $isSubRequest = false)
