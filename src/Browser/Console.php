@@ -19,7 +19,8 @@ class Console
     private $lastResponseHeaders = null;
 
     private $redirects = 0;
-    private $timeout = 120;
+    private $connectTimeout = self::DEFAULT_TIMEOUT;
+    private $timeout = self::DEFAULT_TIMEOUT;
 
     private $headers = array();
 
@@ -29,6 +30,10 @@ class Console
 
     const REQUEST_METHOD_POST = "POST";
     const REQUEST_METHOD_GET = "GET";
+
+    const OPTION_CONNECT_TIMEOUT = 'option_connect_timeout';
+    const OPTION_TIMEOUT = 'option_timeout';
+    const DEFAULT_TIMEOUT = 120;
 
     public function __construct($cookiesJar = null)
     {
@@ -80,6 +85,16 @@ class Console
         return $this->lastResponseHeaders;
     }
 
+    public function setOptions($options)
+    {
+        if (array_key_exists(self::OPTION_CONNECT_TIMEOUT, $options)) {
+            $this->connectTimeout = $options[self::OPTION_CONNECT_TIMEOUT];
+        }
+        if (array_key_exists(self::OPTION_TIMEOUT, $options)) {
+            $this->timeout = $options[self::OPTION_TIMEOUT];
+        }
+    }
+
     public function mergeParams($url, $params)
     {
         $urlParts = parse_url($url);
@@ -91,6 +106,14 @@ class Console
         $result = SbUrlUtils::httpBuildUrl($url, $urlParts);
         $result = rtrim($result, '?');
         return $result;
+    }
+
+    public function downloadFile($url, $destinationFile)
+    {
+        $data = $this->get($url);
+        $file = fopen($destinationFile, "w+");
+        fputs($file, $data);
+        fclose($file);
     }
 
     public function request($url, $method = self::REQUEST_METHOD_GET, $params = array(), $redirect = 0, $isSubRequest = false)
