@@ -104,7 +104,7 @@ class Console
             $urlParts['query'] = http_build_query($params);
         }
         $result = SbUrlUtils::httpBuildUrl($url, $urlParts);
-        $result = rtrim($result, '?');
+        $result = rtrim($result, '?&');
         return $result;
     }
 
@@ -209,7 +209,7 @@ class Console
             $redirectUrl = $this->relativeToAbsolute($redirectUrl);
             return $this->request($redirectUrl, self::REQUEST_METHOD_GET, array(), $redirect + 1);
         } elseif ($httpCode > 400) {
-
+            throw new Exception\Exception("http error ". $httpCode);
         }
 
         return $responseBody;
@@ -233,9 +233,9 @@ class Console
             // относит url, to-do parse url
 
             if (strpos($url, '/') === 0) {
-                $url = $this->getCurrentScheme() . ':' . $this->getCurrentHost() . $url;
+                $url = $this->getCurrentScheme() . '://' . $this->getCurrentHost() . $url;
             } else {
-                $url = $this->getCurrentScheme() . ':' . $this->getCurrentHost() . '/' .$url;
+                $url = $this->getCurrentScheme() . '://' . $this->getCurrentHost() . '/' .$url;
             }
         }
         return $url;
