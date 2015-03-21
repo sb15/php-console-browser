@@ -386,6 +386,10 @@ class Console
      */
     public function getFormFromDom($dom)
     {
+        if (!$dom) {
+            return false;
+        }
+
         $action = $dom->getAttribute('action');
         if (!$action) {
             $action = $this->getLastUrl();
