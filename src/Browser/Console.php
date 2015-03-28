@@ -168,15 +168,24 @@ class Console
         $response = curl_exec($ch);
         $error = curl_errno($ch);
         $requestInfo = curl_getinfo($ch);
+        curl_close($ch);
+
         $headerSize = $requestInfo['header_size'];
         $responseHeader = substr($response, 0, $headerSize);
         $responseBody = substr($response, $headerSize);
 
-        curl_close($ch);
+        if (array_key_exists('redirect_url', $requestInfo)) {
+            $redirectUrl = $requestInfo['redirect_url'];
+        } else {
+            $redirectUrl = null;
+        }
 
-        $redirectUrl = $requestInfo['redirect_url'];
+        if (array_key_exists('request_header', $requestInfo)) {
+            $this->lastRequest = $requestInfo['request_header'];
+        } else {
+            $this->lastRequest = null;
+        }
 
-        $this->lastRequest = $requestInfo['request_header'];
         if ($method == self::REQUEST_METHOD_POST ) {
             if (is_array($params)) {
                 $this->lastRequest .= http_build_query($params);
