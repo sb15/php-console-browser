@@ -450,6 +450,19 @@ class Console
         return $result;
     }
 
+    /**
+     * @param $selector
+     * @param \simple_html_dom_node $dom
+     * @return \simple_html_dom_node
+     */
+    public function domFind($selector, $dom = null)
+    {
+        if (is_null($dom)) {
+            $dom = $this->getDom();
+        }
+        return $dom->find($selector);
+    }
+
     public function getForms()
     {
         if (!$this->getLastResponse()) {
