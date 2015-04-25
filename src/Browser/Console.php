@@ -453,7 +453,7 @@ class Console
     /**
      * @param $selector
      * @param \simple_html_dom_node $dom
-     * @return \simple_html_dom_node
+     * @return \simple_html_dom_node[]
      */
     public function domFind($selector, $dom = null)
     {
@@ -461,6 +461,33 @@ class Console
             $dom = $this->getDom();
         }
         return $dom->find($selector);
+    }
+
+    /**
+     * @param $selector
+     * @param \simple_html_dom_node $dom
+     * @return \simple_html_dom_node
+     */
+    public function domFindFirst($selector, $dom = null)
+    {
+        if (is_null($dom)) {
+            $dom = $this->getDom();
+        }
+        return $dom->find($selector, 0);
+    }
+
+    /**
+     * @param $selector
+     * @param \simple_html_dom_node $dom
+     * @param int $idx
+     * @return \simple_html_dom_node
+     */
+    public function domFindNElement($selector, $idx, $dom = null)
+    {
+        if (is_null($dom)) {
+            $dom = $this->getDom();
+        }
+        return $dom->find($selector, $idx);
     }
 
     public function getForms()
