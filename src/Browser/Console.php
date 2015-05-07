@@ -9,6 +9,7 @@ class Console
 {
     private $cookiesJar = null;
     private $userAgent = null;
+    private $cache = null;
 
     private $referer = null;
 
@@ -21,6 +22,7 @@ class Console
     private $redirects = 0;
     private $connectTimeout = self::DEFAULT_TIMEOUT;
     private $timeout = self::DEFAULT_TIMEOUT;
+    private $proxy = null;
 
     private $headers = array();
 
@@ -33,11 +35,20 @@ class Console
 
     const OPTION_CONNECT_TIMEOUT = 'option_connect_timeout';
     const OPTION_TIMEOUT = 'option_timeout';
+    const OPTION_PROXY = 'option_proxy';
+    const OPTION_USER_AGENT = 'option_user_agent';
+    const OPTION_CACHE = 'option_cache';
+    const OPTION_COOKIES_JAR = 'option_cookies_jar';
     const DEFAULT_TIMEOUT = 120;
 
-    public function __construct($cookiesJar = null)
+    public function __construct($options = null)
     {
-        $this->cookiesJar = $cookiesJar;
+        if (is_array($options)) {
+            $this->setOptions($options);
+        } else {
+            // legacy
+            $this->cookiesJar = $options;
+        }
     }
 
     public function addHeader($name, $value)
@@ -63,6 +74,16 @@ class Console
     public function setUserAgent($userAgent)
     {
         $this->userAgent = $userAgent;
+    }
+
+    public function setCache(Cache\CacheInterface $cache)
+    {
+        $this->cache = $cache;
+    }
+
+    public function setProxy($proxy)
+    {
+        $this->proxy = $proxy;
     }
 
     public function getCookiesJar()
@@ -93,6 +114,15 @@ class Console
         if (array_key_exists(self::OPTION_TIMEOUT, $options)) {
             $this->timeout = $options[self::OPTION_TIMEOUT];
         }
+        if (array_key_exists(self::OPTION_USER_AGENT, $options)) {
+            $this->userAgent = $options[self::OPTION_USER_AGENT];
+        }
+        if (array_key_exists(self::OPTION_PROXY, $options)) {
+            $this->proxy = $options[self::OPTION_PROXY];
+        }
+        if (array_key_exists(self::OPTION_CACHE, $options)) {
+            $this->cache = $options[self::OPTION_CACHE];
+        }
     }
 
     public function mergeParams($url, $params)
@@ -116,10 +146,37 @@ class Console
         fclose($file);
     }
 
+    /**
+     * @return Cache\CacheInterface
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    public function isCacheEnable()
+    {
+        return $this->cache instanceof Cache\CacheInterface;
+    }
+
     public function request($url, $method = self::REQUEST_METHOD_GET, $params = array(), $redirect = 0, $isSubRequest = false)
     {
-        if ($method == self::REQUEST_METHOD_GET) {
+        $isMethodGet = $method == self::REQUEST_METHOD_GET;
+
+        if ($isMethodGet) {
             $requestUrl = $this->mergeParams($url, $params);
+
+            if ($this->isCacheEnable()) {
+                $cacheData = $this->getCache()->load(sha1($requestUrl));
+                if ($cacheData) {
+                    $this->lastResponse = $cacheData;
+                    $this->lastResponseBody = $cacheData;
+                    $this->lastResponseHeaders = '';
+                    $this->lastUrl = $requestUrl;
+                    return $cacheData;
+                }
+            }
+
             $ch = curl_init($requestUrl);
         } else {
             $requestUrl = $url;
@@ -139,6 +196,8 @@ class Console
             curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiesJar);
             curl_setopt($ch, CURLOPT_COOKIEFILE, $cookiesJar);
         }
+
+        curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
 
         $headers = $this->getHeaders();
         if ($headers) {
@@ -214,6 +273,11 @@ class Console
             if (!$isSubRequest) {
                 $this->referer = $requestUrl;
             }
+
+            if ($isMethodGet && $this->isCacheEnable()) {
+                $this->getCache()->save(sha1($requestUrl), $responseBody);
+            }
+
         } elseif ($httpCode >= 300 && $httpCode < 400) {
             $redirectUrl = $this->relativeToAbsolute($redirectUrl);
             return $this->request($redirectUrl, self::REQUEST_METHOD_GET, array(), $redirect + 1);
@@ -368,14 +432,14 @@ class Console
     public function getDom()
     {
         if (!$this->dom) {
-            $this->dom = $this->getHtmlDomParser($this->getLastResponse());
+            $this->dom = $this->getHtmlDomParser($this->getLastResponseBody());
         }
         return $this->dom;
     }
 
     public function getForm($selector)
     {
-        if (!$this->getLastResponse()) {
+        if (!$this->getLastResponseBody()) {
             return false;
         }
 
@@ -492,10 +556,10 @@ class Console
 
     public function getForms()
     {
-        if (!$this->getLastResponse()) {
+        if (!$this->getLastResponseBody()) {
             return false;
         }
-        $dom = $this->getHtmlDomParser($this->getLastResponse());
+        $dom = $this->getHtmlDomParser($this->getLastResponseBody());
         $forms = $dom->find('form');
         $i = 1;
         $result = array();
