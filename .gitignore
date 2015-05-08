@@ -8,6 +8,6 @@ nbproject
 .settings
 composer.lock
 vendor
-cache
+/cache
 atlassian-ide-plugin.xml
 public/sitemap.xml.gz
