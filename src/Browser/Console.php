@@ -173,6 +173,7 @@ class Console
                     $this->lastResponseBody = $cacheData;
                     $this->lastResponseHeaders = '';
                     $this->lastUrl = $requestUrl;
+                    $this->dom = null;
                     return $cacheData;
                 }
             }
