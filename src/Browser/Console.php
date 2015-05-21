@@ -460,7 +460,7 @@ class Console
      */
     public function getFormFromDom($dom)
     {
-        if (!$dom instanceof \simple_html_dom) {
+        if (!$this->isValidDom($dom)) {
             return false;
         }
 
@@ -526,7 +526,7 @@ class Console
             $dom = $this->getDom();
         }
 
-        if (!$dom instanceof \simple_html_dom) {
+        if (!$this->isValidDom($dom)) {
             return null;
         }
 
@@ -544,7 +544,7 @@ class Console
             $dom = $this->getDom();
         }
 
-        if (!$dom instanceof \simple_html_dom) {
+        if (!$this->isValidDom($dom)) {
             return null;
         }
 
@@ -563,7 +563,7 @@ class Console
             $dom = $this->getDom();
         }
 
-        if (!$dom instanceof \simple_html_dom) {
+        if (!$this->isValidDom($dom)) {
             return null;
         }
 
@@ -577,7 +577,7 @@ class Console
         }
 
         $dom = $this->getHtmlDomParser($this->getLastResponseBody());
-        if (!$dom instanceof \simple_html_dom) {
+        if (!$this->isValidDom($dom)) {
             return [];
         }
 
@@ -589,5 +589,13 @@ class Console
             $i++;
         }
         return $result;
+    }
+
+    private function isValidDom($dom)
+    {
+        if (!$dom instanceof \simple_html_dom && !$dom instanceof \simple_html_dom_node) {
+            return false;
+        }
+        return true;
     }
 }
