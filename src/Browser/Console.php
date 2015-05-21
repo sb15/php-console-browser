@@ -444,7 +444,7 @@ class Console
             return false;
         }
 
-        $form = $this->getDom()->find($selector, 0);
+        $form = $this->domFindFirst($selector);
         return $this->getFormFromDom($form);
     }
 
@@ -460,7 +460,7 @@ class Console
      */
     public function getFormFromDom($dom)
     {
-        if (!$dom) {
+        if (!$dom instanceof \simple_html_dom_node) {
             return false;
         }
 
@@ -525,6 +525,11 @@ class Console
         if (is_null($dom)) {
             $dom = $this->getDom();
         }
+
+        if (!$dom instanceof \simple_html_dom_node) {
+            return null;
+        }
+
         return $dom->find($selector);
     }
 
@@ -538,6 +543,11 @@ class Console
         if (is_null($dom)) {
             $dom = $this->getDom();
         }
+
+        if (!$dom instanceof \simple_html_dom_node) {
+            return null;
+        }
+
         return $dom->find($selector, 0);
     }
 
@@ -552,18 +562,28 @@ class Console
         if (is_null($dom)) {
             $dom = $this->getDom();
         }
+
+        if (!$dom instanceof \simple_html_dom_node) {
+            return null;
+        }
+
         return $dom->find($selector, $idx);
     }
 
     public function getForms()
     {
         if (!$this->getLastResponseBody()) {
-            return false;
+            return [];
         }
+
         $dom = $this->getHtmlDomParser($this->getLastResponseBody());
+        if (!$dom instanceof \simple_html_dom_node) {
+            return [];
+        }
+
         $forms = $dom->find('form');
         $i = 1;
-        $result = array();
+        $result = [];
         foreach ($forms as $form) {
             $result['form_' . $i] = $this->getFormFromDom($form);
             $i++;
