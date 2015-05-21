@@ -327,7 +327,7 @@ class Console
 
     /**
      * @param $html
-     * @return \simple_html_dom_node
+     * @return \simple_html_dom
      */
     public function getHtmlDomParser($html)
     {
@@ -455,12 +455,12 @@ class Console
     }
 
     /**
-     * @param \simple_html_dom_node $dom
+     * @param \simple_html_dom $dom
      * @return array
      */
     public function getFormFromDom($dom)
     {
-        if (!$dom instanceof \simple_html_dom_node) {
+        if (!$dom instanceof \simple_html_dom) {
             return false;
         }
 
@@ -490,7 +490,7 @@ class Console
         $formInputData = array();
 
         $inputs = $dom->find('input'); // input[type=text]
-        /** @var \simple_html_dom_node[] $inputs  */
+        /** @var \simple_html_dom[] $inputs  */
         foreach ($inputs as $input) {
             $inputType = $input->getAttribute('type');
             $inputName = $input->getAttribute('name');
@@ -500,7 +500,7 @@ class Console
         }
 
         $images = $dom->find('img');
-        /** @var \simple_html_dom_node[] $images  */
+        /** @var \simple_html_dom[] $images  */
         foreach ($images as $img) {
             $imageSrc = $img->getAttribute ( 'src' );
             $image = array(
@@ -517,8 +517,8 @@ class Console
 
     /**
      * @param $selector
-     * @param \simple_html_dom_node $dom
-     * @return \simple_html_dom_node[]
+     * @param \simple_html_dom $dom
+     * @return \simple_html_dom[]
      */
     public function domFind($selector, $dom = null)
     {
@@ -526,7 +526,7 @@ class Console
             $dom = $this->getDom();
         }
 
-        if (!$dom instanceof \simple_html_dom_node) {
+        if (!$dom instanceof \simple_html_dom) {
             return null;
         }
 
@@ -535,8 +535,8 @@ class Console
 
     /**
      * @param $selector
-     * @param \simple_html_dom_node $dom
-     * @return \simple_html_dom_node
+     * @param \simple_html_dom $dom
+     * @return \simple_html_dom
      */
     public function domFindFirst($selector, $dom = null)
     {
@@ -544,7 +544,7 @@ class Console
             $dom = $this->getDom();
         }
 
-        if (!$dom instanceof \simple_html_dom_node) {
+        if (!$dom instanceof \simple_html_dom) {
             return null;
         }
 
@@ -553,9 +553,9 @@ class Console
 
     /**
      * @param $selector
-     * @param \simple_html_dom_node $dom
+     * @param \simple_html_dom $dom
      * @param int $idx
-     * @return \simple_html_dom_node
+     * @return \simple_html_dom
      */
     public function domFindNElement($selector, $idx, $dom = null)
     {
@@ -563,7 +563,7 @@ class Console
             $dom = $this->getDom();
         }
 
-        if (!$dom instanceof \simple_html_dom_node) {
+        if (!$dom instanceof \simple_html_dom) {
             return null;
         }
 
@@ -577,7 +577,7 @@ class Console
         }
 
         $dom = $this->getHtmlDomParser($this->getLastResponseBody());
-        if (!$dom instanceof \simple_html_dom_node) {
+        if (!$dom instanceof \simple_html_dom) {
             return [];
         }
 
