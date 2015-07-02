@@ -4,6 +4,7 @@ namespace Sb\Browser;
 
 use Sunra\PhpSimple\HtmlDomParser;
 use Sb\UrlUtils as SbUrlUtils;
+use Sb\HttpHeaderUtils as SbHttpHeaderUtils;
 
 class Console
 {
@@ -104,6 +105,11 @@ class Console
     public function getLastResponseHeaders()
     {
         return $this->lastResponseHeaders;
+    }
+
+    public function getLastResponseHeadersAsArray()
+    {
+        return SbHttpHeaderUtils::parseToArray($this->getLastResponseHeaders());
     }
 
     public function setOptions($options)
