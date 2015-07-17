@@ -464,7 +464,7 @@ class Console
     }
 
     /**
-     * @param \simple_html_dom $dom
+     * @param \simple_html_dom_node $dom
      * @return array
      */
     public function getFormFromDom($dom)
@@ -499,7 +499,7 @@ class Console
         $formInputData = array();
 
         $inputs = $dom->find('input'); // input[type=text]
-        /** @var \simple_html_dom[] $inputs  */
+        /** @var \simple_html_dom_node[] $inputs  */
         foreach ($inputs as $input) {
             $inputType = $input->getAttribute('type');
             $inputName = $input->getAttribute('name');
@@ -509,7 +509,7 @@ class Console
         }
 
         $images = $dom->find('img');
-        /** @var \simple_html_dom[] $images  */
+        /** @var \simple_html_dom_node[] $images  */
         foreach ($images as $img) {
             $imageSrc = $img->getAttribute ( 'src' );
             $image = array(
@@ -526,8 +526,8 @@ class Console
 
     /**
      * @param $selector
-     * @param \simple_html_dom $dom
-     * @return \simple_html_dom[]
+     * @param \simple_html_dom_node $dom
+     * @return \simple_html_dom_node[]
      */
     public function domFind($selector, $dom = null)
     {
@@ -544,8 +544,8 @@ class Console
 
     /**
      * @param $selector
-     * @param \simple_html_dom $dom
-     * @return \simple_html_dom
+     * @param \simple_html_dom_node $dom
+     * @return \simple_html_dom_node
      */
     public function domFindFirst($selector, $dom = null)
     {
@@ -562,9 +562,9 @@ class Console
 
     /**
      * @param $selector
-     * @param \simple_html_dom $dom
+     * @param \simple_html_dom_node $dom
      * @param int $idx
-     * @return \simple_html_dom
+     * @return \simple_html_dom_node
      */
     public function domFindNElement($selector, $idx, $dom = null)
     {
