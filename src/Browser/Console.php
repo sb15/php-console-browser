@@ -128,6 +128,9 @@ class Console
         }
         if (array_key_exists(self::OPTION_CACHE, $options)) {
             $this->cache = $options[self::OPTION_CACHE];
+        }       
+        if (array_key_exists(self::OPTION_COOKIES_JAR, $options)) {
+            $this->cookiesJar = $options[self::OPTION_COOKIES_JAR];
         }
     }
 
