@@ -192,11 +192,7 @@ class Console
             $requestUrl = $url;
             $ch = curl_init($requestUrl);
             curl_setopt($ch, CURLOPT_POST, 1);
-            if (is_array($params)) {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-            } else {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode($params));
-            }
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
         }
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
