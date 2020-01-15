@@ -16,8 +16,34 @@
             "Sb\\": "src"
         }
     },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "simplehtmldom/simplehtmldom",
+                "version": "1.9.1",
+                "source": {
+                    "type": "git",
+                    "url": "https://github.com/simplehtmldom/simplehtmldom",
+                    "reference": "1.9.1"
+                },
+                "autoload": {
+                    "classmap": [
+                        "./"
+                    ],
+                    "exclude-from-classmap": [
+                        "/example/",
+                        "/manual/",
+                        "/testcase/",
+                        "/tests/",
+                        "simple_html_dom.php"
+                    ]
+                }
+            }
+        }
+    ],
     "require": {
-        "sb15/php-simple-html-dom-parser": "v1.5.0",
-        "sb15/utils": "dev-master"
+        "sb15/utils": "dev-master",
+        "simplehtmldom/simplehtmldom": "1.9.1"
     }
 }
