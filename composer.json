@@ -18,6 +18,6 @@
     },
     "require": {
         "sb15/utils": "0.0.14",
-        "simplehtmldom/simplehtmldom": "dev-master"
+        "simplehtmldom/simplehtmldom": "2.0-RC2 as 2.0.0"
     }
 }
