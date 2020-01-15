@@ -16,9 +16,8 @@
             "Sb\\": "src"
         }
     },
-    "minimum-stability": "RC",
     "require": {
         "sb15/utils": "0.0.14",
-        "simplehtmldom/simplehtmldom": "2.0-RC2"
+        "simplehtmldom/simplehtmldom": "dev-master"
     }
 }
