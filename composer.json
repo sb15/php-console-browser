@@ -16,34 +16,9 @@
             "Sb\\": "src"
         }
     },
-    "repositories": [
-        {
-            "type": "package",
-            "package": {
-                "name": "simplehtmldom/simplehtmldom",
-                "version": "1.9.1",
-                "source": {
-                    "type": "git",
-                    "url": "https://github.com/simplehtmldom/simplehtmldom",
-                    "reference": "1.9.1"
-                },
-                "autoload": {
-                    "classmap": [
-                        "./"
-                    ],
-                    "exclude-from-classmap": [
-                        "/example/",
-                        "/manual/",
-                        "/testcase/",
-                        "/tests/",
-                        "simple_html_dom.php"
-                    ]
-                }
-            }
-        }
-    ],
+    "minimum-stability": "RC",
     "require": {
         "sb15/utils": "0.0.14",
-        "simplehtmldom/simplehtmldom": "1.9.1"
+        "simplehtmldom/simplehtmldom": "2.0-RC2"
     }
 }
